@@ -25,8 +25,8 @@ Which workspace? (path under `projects/*/workspaces/`)
 
 ## Rules
 
-- **Never write inside the workspace directory.** It is Fabric-owned; anything you add there will
-  appear as an unexpected change on the next sync.
+- **Never write inside an item folder.** Fabric deletes non-definition files there on the next
+  commit. Workspace documentation belongs beside the synced directory, not in it.
 - Say what you could not determine, rather than inferring. "Source system unknown — not derivable
   from the definition" is a useful line; a plausible guess is not.
 - Keep it under two pages. Long documentation is unread documentation.

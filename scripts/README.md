@@ -17,13 +17,14 @@ Pipelines — deliberately, because this repository has to work on both.
 
 Checks, in order:
 
-1. Every folder has a `README.md` index — Fabric-owned directories excluded, because a README inside
-   one would show up as an unexpected change on the next sync
+1. Every folder has a `README.md` index — workspace-synced directories excluded, because a README
+   inside an item folder is deleted by Fabric on the next commit
 2. No unreplaced template placeholders outside `projects/_template/`
 3. `.platform` files are valid JSON, complete, and consistent with their folder name
 4. `logicalId` is a GUID and is unique within each workspace directory
 5. Display names avoid the characters that force Fabric to fall back to a GUID folder name
-6. Nothing but Fabric item folders sits inside a Git-connected workspace directory
+6. Nothing but Fabric item folders sits inside a Git-connected workspace directory (house rule —
+   keeps the sync surface exactly what Fabric manages)
 7. Relative markdown links resolve
 8. No obvious secrets
 

@@ -8,7 +8,7 @@
     Uses only PowerShell 7 built-ins — no modules, no network.
 
     Checks performed:
-      1. Every folder has a README.md index (Fabric-owned folders excluded)
+      1. Every folder has a README.md index (workspace-synced folders excluded)
       2. No unreplaced <placeholders> outside projects/_template
       3. .platform files are valid, complete, and consistent with their folder name
       4. logicalId is unique within each workspace directory
@@ -53,7 +53,7 @@ function Test-Excluded {
     return $false
 }
 
-# A path is Fabric-owned if it is at or below projects/<project>/workspaces/<ws-dir>/
+# A path is workspace-synced if it is at or below projects/<project>/workspaces/<ws-dir>/
 function Test-FabricOwned {
     param([string]$FullName)
     return (Get-Rel $FullName) -match '^projects/[^/]+/workspaces/[^/]+/'

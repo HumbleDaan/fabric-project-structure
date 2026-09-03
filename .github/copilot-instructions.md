@@ -9,27 +9,80 @@ with live Fabric workspaces through Git integration. Treat them accordingly.
 |---|---|---|
 | `.github/` | Shared core — standards, skills, agents, prompts. True for every project. | Yes, via PR |
 | `projects/<project>/` | Project docs, context, decisions | Yes |
-| `projects/<project>/workspaces/<workspace>/` | **Fabric-owned.** Synced with a live workspace. | **No — see below** |
+| `projects/<project>/workspaces/<workspace>/` | **Synced with a live Fabric workspace.** | Yes — under the rules below |
 | `docs/` | How to operate this repo | Yes |
 | `scripts/` | Validation, bootstrap | Yes |
 
-## The one rule that matters
+## The rules that matter
 
-**Do not hand-edit anything under `projects/*/workspaces/*/`.**
+Git integration is **bidirectional**, and authoring in Git is much of the point. You can change an
+item in Fabric and commit it, or change the definition in Git and sync it into the workspace.
+Microsoft supports both — and for Warehouse [actively recommends the Git-first
+path](https://learn.microsoft.com/fabric/data-warehouse/how-to-git-integration#develop-locally-by-using-a-database-project)
+over incremental live edits.
 
-Those directories are the Git side of a Fabric workspace connection. Each item folder carries a
-`.platform` file containing a `logicalId` — the identifier that ties the file to the item in the
-workspace. Edit it, copy it into a second folder, or reformat it, and the sync breaks in ways that
-are painful to unpick.
+So the rule is not *don't edit*. It is **don't edit the identity layer, and don't author in both
+directions at once.**
 
-The safe loop is always: **change it in Fabric → commit from Fabric → review the diff in Git.**
+### 1. Never touch the identity layer
 
-Two narrow exceptions, both requiring review:
-- Notebook `.py` content, when the team has agreed to author notebooks in VS Code.
-- Deliberately duplicating an item folder as a template — in which case you **must** generate a new
-  `logicalId` (a fresh GUID) and a new `displayName`.
+Three things in an item folder are the plumbing that links the file to the item. Changing them is
+what actually breaks a sync:
 
-Reference: [Git integration source code format](https://learn.microsoft.com/fabric/cicd/git-integration/source-code-format)
+- **`logicalId`** in `.platform` — the link itself. Docs are unambiguous: *"it's essential not to
+  change it in any way."*
+- **`type`** in `.platform` — case-sensitive; changing how it's generated can fail the sync.
+- **The item directory name** — renaming it in Git stops the name syncing, and silently breaks
+  dependency paths in *other* items (a report's `definition.pbir` refers to its semantic model by
+  path). Rename in the workspace instead, or update every dependent reference by hand.
+
+Copying an item folder to seed a new item is fine, but you **must** give the copy a fresh
+`logicalId` GUID *and* a unique `displayName` — duplicate names fail the update outright.
+
+### 2. Sync one direction at a time
+
+> "You can only sync in one direction at a time. You can't commit and update at the same time."
+
+Decide who authors a given change *before* starting, then finish the round trip:
+
+- **Git-first** — edit the definition → PR → **Update from Git** into the workspace.
+- **Fabric-first** — change it in the portal → **Commit to Git** → review the diff.
+
+Half-finished changes sitting on both sides at once is what produces conflicts. That is the real
+hazard here, and it is operational, not corruption.
+
+### 3. Know which files are meant to be hand-written
+
+| File | Author it by hand? |
+|---|---|
+| `definition/*.tmdl` — semantic model | **Yes** — TMDL exists for exactly this |
+| `notebook-content.py` | **Yes** |
+| Warehouse database project (`.sqlproj` + SQL) | **Yes** — MS recommends it over live edits |
+| `function-app.py` — user data functions | **Yes** — docs call it "the main file you edit" |
+| `*.rdl` — paginated report | Carefully; it's XML with a schema |
+| `report.json`, `definition.pbir` | Only with the schema open — don't improvise it |
+| `resources/functions.json` | **No** — docs: "Don't edit this file manually" |
+| `.platform` | **No**, other than `description` |
+
+Expect **cosmetic diff noise** after a Git-authored change. The engine that regenerates a definition
+may reorder things — rename a semantic model column in Git and it gets pushed to the end of the
+`columns` array on the next commit. Docs call this semantically insignificant. Don't chase it. (The
+same applies to line endings: Fabric writes LF, which is why `.gitattributes` pins `eol=lf`.)
+
+### 4. Nothing extra inside an *item* folder
+
+> "During the *Commit to Git* process, the Fabric service deletes files inside the item folder that
+> aren't part of the item definition."
+
+A note left inside `LH_Sales.Lakehouse/` is **deleted** on the next commit. Files outside an item
+folder survive — but we still keep workspace documentation *beside* the synced directory
+(`ws-sales-dev.md` next to `ws-sales-dev/`) so the sync surface is exactly what Fabric manages.
+That second part is a house rule, not a platform constraint.
+
+References:
+[source code format](https://learn.microsoft.com/fabric/cicd/git-integration/source-code-format) ·
+[basic concepts](https://learn.microsoft.com/fabric/cicd/git-integration/git-integration-process#considerations-and-limitations) ·
+[warehouse Git integration](https://learn.microsoft.com/fabric/data-warehouse/how-to-git-integration)
 
 ## Before you start work
 
@@ -69,7 +122,8 @@ If a question is *"how do **we** do X"* → this repository.
 ## Definition of done for a change
 
 - [ ] Names follow the naming convention
-- [ ] Nothing under `workspaces/*/` was hand-edited
+- [ ] No `logicalId`, `type`, or item folder name was changed
+- [ ] Changes to a workspace directory went one direction, and the round trip is finished
 - [ ] No secrets, no hard-coded workspace/capacity IDs outside the parameter file
 - [ ] The relevant `README.md` index was updated
 - [ ] A decision that future-you would question is written up in `projects/<project>/decisions/`

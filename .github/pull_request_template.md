@@ -8,8 +8,9 @@
 ## Checks
 
 - [ ] Names follow [`naming-conventions.md`](../.github/standards/naming-conventions.md)
-- [ ] Nothing under `projects/*/workspaces/*/` was hand-edited — changes came from a Fabric commit
-- [ ] No `logicalId` changed
+- [ ] No `logicalId`, `type`, or item folder name changed
+- [ ] Workspace-directory changes went one direction (Git-first or Fabric-first) and the round trip finished
+- [ ] No non-definition files added inside an item folder — Fabric deletes them on the next commit
 - [ ] No secrets, no hard-coded workspace / capacity / lakehouse IDs
 - [ ] The relevant `README.md` index is updated in this PR
 - [ ] Non-obvious choices are written up in `projects/<project>/decisions/`

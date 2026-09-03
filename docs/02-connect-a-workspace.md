@@ -40,9 +40,9 @@ Then:
 2. Add a row to `projects/<project>/workspaces/README.md`.
 3. Commit and **push**.
 
-> **The notes file goes beside the directory, not inside it.** Everything inside the connected
-> directory is Fabric's. A `README.md` in there shows up as an unexpected change on every sync and
-> someone eventually deletes it to make the diff clean.
+> **The notes file goes beside the directory, not inside it.** Fabric *deletes* non-definition files
+> left inside an item folder on the next commit. Files at the directory root survive, but keeping
+> them out means the sync surface is exactly what Fabric manages — and the diff stays readable.
 
 ## Fabric side
 

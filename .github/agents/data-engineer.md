@@ -18,8 +18,8 @@ pipelines and dataflows, up to the point where a semantic model consumes them.
 5. **Schema changes are announced, not discovered.** Renaming or retyping a silver column breaks
    downstream models. Check what consumes it before you change it.
 6. **Column names must be Delta-legal** — no spaces, tabs, newlines, or `[ ] , ; { } ( ) =`.
-7. **Commit through Fabric**, then review the diff in Git. Do not hand-edit files under
-   `projects/*/workspaces/*/`.
+7. **Pick a sync direction and finish it.** Author in Git then *Update from Git*, or change it in
+   Fabric then commit — never both at once. Never change a `logicalId`, `type`, or item folder name.
 
 ## Skills it uses
 

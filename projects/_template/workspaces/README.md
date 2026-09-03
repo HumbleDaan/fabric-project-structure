@@ -11,10 +11,12 @@ down, and it is the first thing anyone reads when a deployment surprises them.
 
 ## Rules for this folder
 
-1. **`ws-*/` directories are owned by Fabric.** Nothing in them is hand-edited. Change items in
-   Fabric, commit from Fabric, review the diff here.
+1. **`ws-*/` directories are synced with a live workspace.** Editing item definitions here is
+   allowed — sync **one direction at a time**, and never change a `logicalId`, `type`, or item
+   folder name. See [`.github/copilot-instructions.md`](../../../.github/copilot-instructions.md).
 2. **Documentation goes beside the directory, not inside it** — `ws-sales-dev/` is the sync target;
-   `sales-dev.md` next to it is where the notes live.
+   `sales-dev.md` next to it is where the notes live. Fabric deletes non-definition files left
+   inside an item folder.
 3. **One directory per Git-connected workspace.** Two workspaces cannot share a directory on the
    same branch.
 

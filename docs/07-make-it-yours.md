@@ -25,7 +25,8 @@ replace.
 ## What to keep
 
 - The **shared core / per-workspace split**. It's the load-bearing idea.
-- The **"never hand-edit a workspace directory"** rule. Non-negotiable; it's how Fabric works.
+- The **identity-layer rule** (never change `logicalId`, `type`, or an item folder name) and
+  **one sync direction at a time**. Non-negotiable; it's how Fabric works.
 - **Docs beside the directory, not inside it.** Small rule, saves a recurring argument.
 - **ADRs.** Cheap to write, and they end the same debate arriving twice a year.
 - **Installing rather than copying the Fabric skills.**

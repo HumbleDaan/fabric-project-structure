@@ -17,8 +17,10 @@ human can actually judge, and let automation handle the rest.
 
 - [ ] **Only expected item folders changed.** Fabric commits are chatty — an unexpected item in the
       diff usually means someone edited the wrong workspace.
-- [ ] **No `.platform` file has a changed `logicalId`.** This is the tell for a hand-edited or
-      copy-pasted item folder. It will break the workspace link. Automation flags it; you confirm it.
+- [ ] **No `.platform` file has a changed `logicalId` or `type`.** Usually the tell for a copy-pasted
+      item folder. It breaks the workspace link. Automation flags it; you confirm it.
+- [ ] **No item directory was renamed in Git** — it stops the name syncing and breaks dependency
+      paths in other items. Rename in the workspace instead.
 - [ ] **No secrets.** Connection strings, keys, SAS tokens, personal email addresses, tenant GUIDs
       that shouldn't be public.
 - [ ] **No hard-coded stage-specific values** outside the parameter file — workspace IDs, capacity

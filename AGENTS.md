@@ -15,9 +15,11 @@ All three point at the same place. Keep it that way — one source of truth, thi
 
 ## Non-negotiables
 
-1. **Never edit files inside a Git-connected workspace directory by hand.** Those directories
-   (`projects/*/workspaces/*/`) are owned by Fabric. Hand-editing `.platform` files — especially
-   `logicalId` — breaks the workspace↔Git link. Change items in Fabric, then commit.
+1. **Never change the identity layer of a Fabric item.** In `projects/*/workspaces/*/`, the
+   `logicalId` and `type` in `.platform`, and the item folder name, are what link the files to the
+   live workspace. Editing item *definitions* (TMDL, notebook `.py`, warehouse SQL) is supported and
+   often recommended — but sync **one direction at a time**. Detail in
+   [`.github/copilot-instructions.md`](.github/copilot-instructions.md).
 2. **Never write to a production workspace.** Promotion happens through the release process only.
 3. **Follow [`.github/standards/naming-conventions.md`](.github/standards/naming-conventions.md).**
    If a name is not covered there, propose an addition to the standard rather than inventing one.

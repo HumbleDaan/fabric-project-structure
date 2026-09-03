@@ -11,9 +11,11 @@ Apply [`../standards/review-checklist.md`](../standards/review-checklist.md) to 
 ## Do this
 
 1. **Mechanical checks first** — these are objective and block a merge:
-   - Any changed `logicalId` in a `.platform` file → **blocking**. It means an item folder was
-     hand-edited or copied and the workspace link will break.
-   - Any file changed under `projects/*/workspaces/*/` that is not a Fabric-generated item file
+   - Any changed `logicalId` or `type` in a `.platform` file → **blocking**. An item folder was
+     copied without regenerating it, and the workspace link will break.
+   - Any renamed item directory → **blocking** unless every dependent reference was updated in the
+     same PR (a report's `definition.pbir` points at its semantic model by path)
+   - Any non-definition file added inside an item folder — Fabric deletes it on the next commit
    - Secrets, keys, tokens, connection strings
    - Hard-coded workspace / capacity / lakehouse IDs outside a parameter file
    - Names that violate [`../standards/naming-conventions.md`](../standards/naming-conventions.md)

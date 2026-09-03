@@ -93,7 +93,8 @@ workspace header and it truncates.
 | Workspace directory | `ws-<workspace-name-without-org>` | `workspaces/ws-sales-analytics-dev/` |
 
 The `ws-` prefix exists purely so a human scanning the tree can tell instantly which folders are
-Fabric-owned and therefore off-limits for hand edits.
+synced with a live Fabric workspace — and therefore where the identity-layer and one-direction-at-a-time
+rules apply.
 
 ## When you break the convention
 

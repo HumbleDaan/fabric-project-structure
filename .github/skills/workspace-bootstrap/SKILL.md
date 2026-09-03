@@ -50,8 +50,8 @@ projects/<project>/workspaces/
     └── .gitkeep
 ```
 
-**Workspace documentation goes next to the directory, never inside it.** Everything inside
-`ws-*/` is owned by Fabric's sync. Keep it clean so the diff on the first commit is only Fabric items.
+**Workspace documentation goes next to the directory, never inside it.** Keep `ws-*/` limited to what
+Fabric manages, so the diff on the first commit is only Fabric items.
 
 Commit and push before touching Fabric — the branch must exist remotely for Fabric to offer it.
 

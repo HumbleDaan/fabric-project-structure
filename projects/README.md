@@ -18,7 +18,7 @@ projects/<project>/
 └── workspaces/
     ├── README.md          ← workspace ↔ Fabric ↔ branch mapping table
     ├── <workspace>.md     ← notes ABOUT a workspace (outside the synced directory)
-    └── ws-<workspace>/    ← ★ Fabric-owned. Git-connected. Do not hand-edit.
+    └── ws-<workspace>/    ← ★ Git-connected to a Fabric workspace. Sync one direction at a time.
 ```
 
 ## Why the extra level

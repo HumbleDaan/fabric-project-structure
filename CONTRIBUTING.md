@@ -23,7 +23,8 @@ fix(ci): pin python to 3.11 so fabric-cicd resolves
 ### Two rules that keep this coherent
 
 - **Index in the same commit.** Add a file, add its row to that folder's `README.md`. Not later.
-- **Never hand-edit `projects/*/workspaces/*/`.** Change items in Fabric and commit from Fabric.
+- **Never change a `logicalId`, `type`, or item folder name**, and sync a workspace directory in one
+  direction at a time. Editing item definitions is fine — see [`.github/copilot-instructions.md`](.github/copilot-instructions.md).
 
 ## To this reference repository
 
