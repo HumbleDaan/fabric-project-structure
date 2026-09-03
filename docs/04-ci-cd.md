@@ -88,4 +88,5 @@ Automated as the `/release-readiness` prompt.
 - [`../scripts/README.md`](../scripts/README.md) — what validation actually checks
 - [`../.github/agents/release-manager.md`](../.github/agents/release-manager.md)
 - [06 — Azure DevOps port](06-azure-devops-port.md)
+- [09 — Tooling](09-tooling.md) — the CLIs these pipelines invoke
 - [`fabric-cicd` documentation](https://microsoft.github.io/fabric-cicd/)

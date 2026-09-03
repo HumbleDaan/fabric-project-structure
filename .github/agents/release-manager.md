@@ -29,7 +29,7 @@ afterwards exactly what moved, when, and who approved it.
 
 ## Skills it uses
 
-- Microsoft `skills-for-fabric` — deployment pipelines, Fabric REST APIs, `fabric-cicd`
+- Microsoft `skills-for-fabric` (`fabric-skills@fabric-collection`) — deployment pipelines, Fabric REST APIs, `fabric-cicd`
 - [`../standards/branching-and-workspaces.md`](../standards/branching-and-workspaces.md)
 - [`../standards/security-and-access.md`](../standards/security-and-access.md)
 - [`../prompts/release-readiness.prompt.md`](../prompts/release-readiness.prompt.md)

@@ -129,3 +129,4 @@ first month: your layering rules, your glossary landmines, the deployment step e
 - [`../.github/skills/README.md`](../.github/skills/README.md)
 - [`../.github/agents/README.md`](../.github/agents/README.md)
 - [`../.github/prompts/README.md`](../.github/prompts/README.md)
+- [09 — Tooling](09-tooling.md) — why the workload "CLIs" are skills, not binaries

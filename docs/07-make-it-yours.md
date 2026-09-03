@@ -76,5 +76,6 @@ Read it, then delete it.
 ## Related
 
 - [01 — Getting started](01-getting-started.md)
+- [08 — Adopting into an existing setup](08-adopting-into-an-existing-setup.md) — if you are not starting from empty
 - [`../.github/standards/README.md`](../.github/standards/README.md)
 - [`../CONTRIBUTING.md`](../CONTRIBUTING.md)

@@ -97,4 +97,5 @@ trailing space or dot, or is over 256 characters — rename in Fabric and commit
 
 - [`../.github/skills/workspace-bootstrap/SKILL.md`](../.github/skills/workspace-bootstrap/SKILL.md) — the agent version of this page
 - [03 — Branching and promotion](03-branching-and-promotion.md) — which branch you should have picked
+- [08 — Adopting into an existing setup](08-adopting-into-an-existing-setup.md) — connecting a workspace that already has items
 - [Get started with Git integration](https://learn.microsoft.com/fabric/cicd/git-integration/git-get-started) — Microsoft Learn

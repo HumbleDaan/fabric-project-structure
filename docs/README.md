@@ -11,6 +11,8 @@ How to run this repository. Read in order the first time; after that, jump to wh
 | 05 | [Agentic development](05-agentic-development.md) | Setting up Copilot and the Fabric skills |
 | 06 | [Azure DevOps port](06-azure-devops-port.md) | Your Git lives in Azure DevOps |
 | 07 | [Make it yours](07-make-it-yours.md) | Adapting this for your organisation |
+| 08 | [Adopting into an existing setup](08-adopting-into-an-existing-setup.md) | You already have repos, workspaces and habits |
+| 09 | [Tooling](09-tooling.md) | Deciding what to install, and what will corrupt your sync |
 
 ## The rest of the repository
 

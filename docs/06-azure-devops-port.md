@@ -13,7 +13,7 @@ are provider-neutral markdown.
 | `AGENTS.md`, `CLAUDE.md` | ✅ | ✅ | **none** |
 | `projects/**` | ✅ | ✅ | **none** |
 | `scripts/*.ps1` | ✅ | ✅ | **none** |
-| Fabric Git integration | ✅ | ✅ | pick the provider at connect time |
+| Fabric Git integration | ✅ | ✅ | pick the provider at connect time — but see the asymmetry below |
 | CI | `.github/workflows/` | `.azuredevops/pipelines/` | both provided |
 | PR template | `.github/pull_request_template.md` | `.azuredevops/pull_request_template.md` | both provided |
 | Approvals | Environments + reviewers | Environments + checks | configured in the service |
@@ -22,6 +22,24 @@ are provider-neutral markdown.
 
 Roughly 90% of this repository is byte-identical on both. The differences are all pipeline YAML and
 service configuration — neither of which is where your intellectual property lives.
+
+### The one place the providers are *not* at parity
+
+The **repo layout** ports cleanly. The **automation story does not**, and it favours Azure DevOps:
+
+| | Azure DevOps | GitHub |
+|---|---|---|
+| Workspace→Git connection auth | **OAuth2 or service principal** | **Personal access token only** |
+| Unattended, non-human-owned connection | ✅ Possible | ❌ Bound to a user's PAT, which expires |
+| Tenant switch | Git sync switch | Git sync switch **plus** a separate GitHub switch, **off by default** |
+| First-party CI tasks | ✅ [Azure DevOps extension for Fabric](https://marketplace.visualstudio.com/items?itemName=ms-fabric.fabric-devops-pipelines) (preview) | ❌ None found — just `pip install ms-fabric-cli` in a step |
+
+So if you are on Azure DevOps, you are on the better-supported side for automation. Service principal
+setup: [Git integration with service principal](https://learn.microsoft.com/fabric/cicd/git-integration/git-integration-with-service-principal)
+(Azure DevOps only).
+
+The consequence for a GitHub-hosted workspace connection is that **someone owns it personally**. When
+they leave or the PAT expires, sync stops. Put a calendar reminder on the expiry and name an owner.
 
 ### Yes, keep the folder called `.github`
 
@@ -96,4 +114,6 @@ protection stops it being committed. Know which one you have.
 
 - [`../.azuredevops/README.md`](../.azuredevops/README.md) — the folder itself
 - [04 — CI/CD](04-ci-cd.md) — what the pipelines do
+- [08 — Adopting into an existing setup](08-adopting-into-an-existing-setup.md) — if your existing setup already lives here
+- [09 — Tooling](09-tooling.md) — `fab` authentication differs by provider
 - [Fabric Git integration](https://learn.microsoft.com/fabric/cicd/git-integration/git-integration-process) — Microsoft Learn
