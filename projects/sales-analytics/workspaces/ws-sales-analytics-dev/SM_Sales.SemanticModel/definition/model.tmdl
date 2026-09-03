@@ -1,0 +1,40 @@
+/// Sales Analytics — Direct Lake model over the gold layer of LH_Sales.
+/// Illustrative excerpt. A real model has its full table, relationship and measure set here.
+model Model
+	culture: en-GB
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	discourageImplicitMeasures
+	sourceQueryCulture: en-GB
+
+	/// Measures live on this table so they are grouped in one place in the field list.
+	table _Measures
+
+		measure 'Net Sales' = SUM ( fact_sales_line[net_amount_eur] )
+			/// Invoiced amount minus returns and credit notes, excluding VAT and freight.
+			/// Not the same as Gross Sales or Booked Sales — see the project glossary.
+			formatString: #,0.00
+			displayFolder: Revenue
+
+		measure 'Gross Sales' = SUM ( fact_sales_line[gross_amount_eur] )
+			/// Invoiced amount before returns, discounts and credit notes. Excludes VAT and freight.
+			formatString: #,0.00
+			displayFolder: Revenue
+
+		measure 'Return Rate %' =
+			DIVIDE (
+			    SUM ( fact_sales_line[return_amount_eur] ),
+			    [Gross Sales]
+			)
+			/// Returned value as a share of gross sales. Returns matched more than 90 days after
+			/// invoice fall outside the match window — see project-context.md, Known issues.
+			formatString: 0.0%
+			displayFolder: Quality
+
+		column _dummy
+			isHidden
+			dataType: string
+			lineageTag: 00000000-0000-0000-0000-000000000001
+			summarizeBy: none
+			sourceColumn: _dummy
+
+	annotation NOTE = Every measure carries a description. It is the only documentation anyone reads, and Copilot reads it too.

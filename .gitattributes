@@ -1,0 +1,25 @@
+# Normalise line endings so Fabric's Git integration doesn't produce phantom diffs.
+* text=auto eol=lf
+
+# Fabric / Power BI source formats are text.
+*.platform     text eol=lf
+*.tmdl         text eol=lf
+*.pbir         text eol=lf
+*.pbism        text eol=lf
+*.pbip         text eol=lf
+*.json         text eol=lf
+*.py           text eol=lf
+*.sql          text eol=lf
+*.rdl          text eol=lf
+
+# Binaries Fabric may emit — never diff or merge these.
+*.pbix         binary
+*.pbit         binary
+*.png          binary
+*.jpg          binary
+*.xlsx         binary
+
+# Windows-only tooling keeps CRLF.
+*.ps1          text eol=crlf
+*.cmd          text eol=crlf
+*.bat          text eol=crlf

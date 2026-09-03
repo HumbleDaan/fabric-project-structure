@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Notebook",
+    "displayName": "NB_Sales_Bronze_Ingest",
+    "description": "Lands SAP order, invoice and return extracts into the bronze layer of LH_Sales. Incremental on changed_on with a 7-day look-back window."
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "869dddea-3f61-4766-aa02-3546a88ebd30"
+  }
+}

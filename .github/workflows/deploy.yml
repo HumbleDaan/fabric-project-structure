@@ -1,0 +1,90 @@
+# Deployment to test / production.
+#
+# TEMPLATE — this will not run until you fill in the variables below and create the
+# `fabric-test` / `fabric-prod` environments with required reviewers.
+#
+# Applies to the branch-per-stage pattern. If your project uses Fabric deployment pipelines
+# (the default in this repo), promotion happens in Fabric and this workflow is not needed —
+# see .github/standards/branching-and-workspaces.md.
+
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      project:
+        description: Project folder under projects/
+        required: true
+        default: sales-analytics
+      target_stage:
+        description: Target stage
+        required: true
+        type: choice
+        options: [test, prod]
+
+permissions:
+  contents: read
+  id-token: write          # OIDC federated credential — no client secret stored anywhere
+
+jobs:
+  deploy:
+    name: Deploy ${{ inputs.project }} to ${{ inputs.target_stage }}
+    runs-on: ubuntu-latest
+    # The approval gate. Configure required reviewers on the environment, not in this file.
+    environment: fabric-${{ inputs.target_stage }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate before deploying
+        shell: pwsh
+        run: ./scripts/validate-structure.ps1
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          allow-no-subscriptions: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install fabric-cicd
+        run: pip install --quiet fabric-cicd
+
+      - name: Publish items
+        env:
+          PROJECT: ${{ inputs.project }}
+          STAGE: ${{ inputs.target_stage }}
+          WORKSPACE_ID: ${{ vars[format('FABRIC_WORKSPACE_ID_{0}', inputs.target_stage)] }}
+        run: |
+          python - <<'PY'
+          import os
+          from azure.identity import DefaultAzureCredential
+          from fabric_cicd import FabricWorkspace, publish_all_items
+
+          project = os.environ["PROJECT"]
+          stage = os.environ["STAGE"]
+
+          workspace = FabricWorkspace(
+              workspace_id=os.environ["WORKSPACE_ID"],
+              environment=stage,
+              repository_directory=f"projects/{project}/workspaces/ws-{project}-{stage}",
+              item_type_in_scope=[
+                  "Notebook", "DataPipeline", "Environment",
+                  "SemanticModel", "Report", "Lakehouse",
+              ],
+              token_credential=DefaultAzureCredential(),
+          )
+          publish_all_items(workspace)
+          PY
+        shell: bash
+
+      - name: Reminder — metadata moved, data did not
+        run: |
+          echo "::notice::Deployment carries item definitions only."
+          echo "::notice::Run the load in ${{ inputs.target_stage }} before trusting any number there."
+          echo "::notice::Verify: Spark views, external shortcuts, OneLake role names."

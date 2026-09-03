@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "RPT_Sales_Overview",
+    "description": "Daily Sales Ops overview. Bound to SM_Sales by relative path — renaming the semantic model folder breaks this binding."
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "9f628f7b-69d5-4439-9ce3-9a73b4875e04"
+  }
+}

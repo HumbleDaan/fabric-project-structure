@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "SM_Sales",
+    "description": "Direct Lake semantic model over the gold star schema in LH_Sales. Reads gold only. See ADR 0001."
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "3136b441-0c6c-4685-8842-3286b76cbeab"
+  }
+}

@@ -1,0 +1,33 @@
+# --- Secrets: never commit these -------------------------------------------
+*.env
+.env.*
+!.env.example
+*.pfx
+*.pem
+*.key
+local.settings.json
+**/parameter.local.yml
+
+# --- Local agent / editor state --------------------------------------------
+.vscode/mcp.json
+.vscode/settings.json
+.copilot/
+.claude/
+vendor/skills-for-fabric/
+
+# --- Power BI Desktop artefacts that should not be source-controlled -------
+*.pbix
+*.pbit
+.pbi/localSettings.json
+.pbi/cache.abf
+
+# --- Fabric / notebook noise ------------------------------------------------
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
+.spark-warehouse/
+
+# --- OS -----------------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini

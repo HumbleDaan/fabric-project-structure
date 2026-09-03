@@ -1,0 +1,101 @@
+# Deployment to test / production.
+#
+# TEMPLATE — will not run until you create:
+#   - Service connection  : fabric-deploy  (workload identity federation, no stored secret)
+#   - Variable group      : fabric-deploy  (linked to Key Vault)
+#   - Environments        : fabric-test, fabric-prod  with approval checks
+#
+# Applies to the branch-per-stage pattern. Projects using Fabric deployment pipelines promote
+# in Fabric and do not need this — see .github/standards/branching-and-workspaces.md.
+
+trigger: none          # manual only
+
+parameters:
+  - name: project
+    displayName: Project folder under projects/
+    type: string
+    default: sales-analytics
+  - name: targetStage
+    displayName: Target stage
+    type: string
+    default: test
+    values: [test, prod]
+
+variables:
+  - group: fabric-deploy          # provides FABRIC_WORKSPACE_ID_TEST / _PROD
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: Validate
+    jobs:
+      - job: Validate
+        steps:
+          - task: PowerShell@2
+            displayName: Validate repository structure
+            inputs:
+              filePath: scripts/validate-structure.ps1
+              pwsh: true
+
+  - stage: Deploy
+    dependsOn: Validate
+    condition: succeeded()
+    jobs:
+      # A deployment job binds to an environment, which is where the approval check lives.
+      - deployment: DeployFabric
+        displayName: Deploy ${{ parameters.project }} to ${{ parameters.targetStage }}
+        environment: fabric-${{ parameters.targetStage }}
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+
+                - task: UsePythonVersion@0
+                  inputs:
+                    versionSpec: '3.11'
+
+                - script: pip install --quiet fabric-cicd
+                  displayName: Install fabric-cicd
+
+                # AzureCLI@2 with a workload-identity service connection makes
+                # DefaultAzureCredential work without a stored secret.
+                - task: AzureCLI@2
+                  displayName: Publish items
+                  inputs:
+                    azureSubscription: fabric-deploy
+                    scriptType: bash
+                    scriptLocation: inlineScript
+                    addSpnToEnvironment: true
+                    inlineScript: |
+                      python - <<'PY'
+                      import os
+                      from azure.identity import DefaultAzureCredential
+                      from fabric_cicd import FabricWorkspace, publish_all_items
+
+                      project = os.environ["PROJECT"]
+                      stage = os.environ["STAGE"]
+
+                      workspace = FabricWorkspace(
+                          workspace_id=os.environ["WORKSPACE_ID"],
+                          environment=stage,
+                          repository_directory=f"projects/{project}/workspaces/ws-{project}-{stage}",
+                          item_type_in_scope=[
+                              "Notebook", "DataPipeline", "Environment",
+                              "SemanticModel", "Report", "Lakehouse",
+                          ],
+                          token_credential=DefaultAzureCredential(),
+                      )
+                      publish_all_items(workspace)
+                      PY
+                  env:
+                    PROJECT: ${{ parameters.project }}
+                    STAGE: ${{ parameters.targetStage }}
+                    WORKSPACE_ID: $(FABRIC_WORKSPACE_ID_${{ upper(parameters.targetStage) }})
+
+                - script: |
+                    echo "##vso[task.logissue type=warning]Deployment carries item definitions only."
+                    echo "##vso[task.logissue type=warning]Run the load in ${{ parameters.targetStage }} before trusting any number there."
+                    echo "##vso[task.logissue type=warning]Verify: Spark views, external shortcuts, OneLake role names."
+                  displayName: Reminder — metadata moved, data did not

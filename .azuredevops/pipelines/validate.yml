@@ -1,0 +1,61 @@
+# Structure and standards validation.
+# Mirror of .github/workflows/validate.yml. Same script, same checks.
+
+trigger:
+  branches:
+    include: [main]
+
+pr:
+  branches:
+    include: [main]
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: Validate
+    displayName: Validate
+    jobs:
+
+      - job: Structure
+        displayName: Structure and standards
+        steps:
+          - checkout: self
+            fetchDepth: 0
+
+          # ubuntu-latest hosted agents ship PowerShell 7 as `pwsh`.
+          - task: PowerShell@2
+            displayName: Validate repository structure
+            inputs:
+              filePath: scripts/validate-structure.ps1
+              pwsh: true
+              failOnStderr: false
+
+      - job: FabricItems
+        displayName: Fabric item definitions
+        steps:
+          - checkout: self
+
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.11'
+
+          - script: pip install --quiet fabric-cicd
+            displayName: Install fabric-cicd
+
+          - task: PowerShell@2
+            displayName: Parse item definitions
+            inputs:
+              pwsh: true
+              targetType: inline
+              script: |
+                $failed = $false
+                Get-ChildItem -Path projects -Recurse -Filter '.platform' -Force | ForEach-Object {
+                    try   { Get-Content $_.FullName -Raw | ConvertFrom-Json | Out-Null }
+                    catch {
+                        Write-Host "##vso[task.logissue type=error]Invalid .platform JSON: $($_.FullName)"
+                        $script:failed = $true
+                    }
+                }
+                if ($failed) { exit 1 }
+                Write-Host 'All .platform files parsed.'

@@ -1,0 +1,52 @@
+name: Validate
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  structure:
+    name: Structure and standards
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # ubuntu-latest ships PowerShell 7 as `pwsh`.
+      - name: Validate repository structure
+        shell: pwsh
+        run: ./scripts/validate-structure.ps1
+
+  fabric-items:
+    name: Fabric item definitions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # fabric-cicd ships a schema-aware parser for Fabric item definitions.
+      # Publishing is gated behind an environment; validation is not.
+      - name: Install fabric-cicd
+        run: pip install --quiet fabric-cicd
+
+      - name: Parse item definitions
+        shell: pwsh
+        run: |
+          $failed = $false
+          Get-ChildItem -Path projects -Recurse -Filter '.platform' -Force | ForEach-Object {
+              try   { Get-Content $_.FullName -Raw | ConvertFrom-Json | Out-Null }
+              catch { Write-Host "::error file=$($_.FullName)::Invalid .platform JSON"; $script:failed = $true }
+          }
+          if ($failed) { exit 1 }
+          Write-Host 'All .platform files parsed.'

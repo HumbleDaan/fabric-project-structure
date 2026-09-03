@@ -1,0 +1,43 @@
+{
+  "//": [
+    "Copy to .vscode/mcp.json and fill in your values. The real file is git-ignored.",
+    "MCP servers give agents LIVE access to Fabric. Skills give them know-how.",
+    "You want both, and they are configured separately.",
+    "Start with the servers you actually need — each one costs context in every session."
+  ],
+
+  "servers": {
+    "fabric-rti": {
+      "//": "Real-Time Intelligence: KQL against Eventhouse/ADX. github.com/microsoft/fabric-rti-mcp",
+      "type": "stdio",
+      "command": "uvx",
+      "args": ["fabric-rti-mcp"],
+      "env": {
+        "KUSTO_SERVICE_URI": "https://<your-eventhouse>.z<region>.kusto.fabric.microsoft.com"
+      }
+    },
+
+    "powerbi-modeling": {
+      "//": "Semantic model authoring over XMLA. github.com/microsoft/powerbi-modeling-mcp",
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@microsoft/powerbi-modeling-mcp"]
+    },
+
+    "fabric-admin": {
+      "//": "Capacity and tenant administration. github.com/microsoft/fabric-admin-mcp",
+      "//disabled": "Admin scope — enable only for users who should have it.",
+      "type": "stdio",
+      "command": "uvx",
+      "args": ["fabric-admin-mcp"]
+    }
+  },
+
+  "//auth": [
+    "Most Fabric MCP servers use your Azure CLI identity:",
+    "  az login",
+    "  az account get-access-token --resource https://api.fabric.microsoft.com",
+    "The agent then acts as you. It cannot reach anything you cannot reach —",
+    "which is exactly the property you want, so do not paper over it with a shared principal."
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Lakehouse",
+    "displayName": "LH_Sales",
+    "description": "Order-to-cash lakehouse. Bronze = as-landed SAP/D365 extracts, silver = conformed and FX-applied, gold = star schema serving SM_Sales."
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "3b4f4194-6394-43c4-9b93-bf510a0c68e1"
+  }
+}
